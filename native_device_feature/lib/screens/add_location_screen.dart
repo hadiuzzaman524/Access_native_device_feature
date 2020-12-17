@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:native_device_feature/providers/items.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as systempath;
 import 'dart:io';
+import 'package:provider/provider.dart';
 
 class AddLocaionScreen extends StatefulWidget {
   static const routeName = '/AddLocationScreen';
@@ -31,16 +33,16 @@ class _AddLocaionScreenState extends State<AddLocaionScreen> {
       }
     });
 
-    final appDirectory=await systempath.getApplicationDocumentsDirectory();
+    final appDirectory = await systempath.getApplicationDocumentsDirectory();
     /*
     systempath.getApplicationDocumentDirectory() return memory card location which
     data can be store.
      */
-    final fileName=path.basename(_image.path);
+    final fileName = path.basename(_image.path);
     /*
     path.basename() uses for get image name.
      */
-    final savedImage=await _image.copy('${appDirectory.path}/$fileName');
+    final savedImage = await _image.copy('${appDirectory.path}/$fileName');
     /*
     finaley copy image into applicationdirectory/filename.ext
      */
@@ -109,7 +111,9 @@ class _AddLocaionScreenState extends State<AddLocaionScreen> {
           RaisedButton.icon(
             color: Colors.amber,
             onPressed: () {
-              print(address);
+              Provider.of<ItemProvider>(context, listen: false)
+                  .addItem(address, _image);
+              Navigator.of(context).pop();
             },
             icon: Icon(Icons.add),
             label: Text("Add Location"),

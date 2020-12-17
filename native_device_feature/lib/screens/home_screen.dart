@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:native_device_feature/providers/items.dart';
+import 'package:provider/provider.dart';
 import 'add_location_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -18,8 +20,22 @@ class HomeScreen extends StatelessWidget {
               label: Text("add")),
         ],
       ),
-      body: Center(
-        child: CircularProgressIndicator(),
+      body: Consumer<ItemProvider>(
+        child: Center(
+          child:Text("No item added"),
+        ),
+        builder: (ctx,obj,ch){
+          return obj.allItem.length<1? ch:ListView.builder(itemBuilder:(ctx,index){
+            return ListTile(
+              title: Text(obj.allItem[index].title),
+              leading: CircleAvatar(
+                backgroundImage: FileImage(obj.allItem[index].file),
+              ),
+              contentPadding: EdgeInsets.all(8.0),
+            );
+          },
+          itemCount: obj.allItem.length,);
+        },
       ),
     );
   }
