@@ -110,8 +110,8 @@ class _AddLocaionScreenState extends State<AddLocaionScreen> {
           ),
           RaisedButton.icon(
             color: Colors.amber,
-            onPressed: () {
-              Provider.of<ItemProvider>(context, listen: false)
+            onPressed: () async{
+             await Provider.of<ItemProvider>(context, listen: false)
                   .addItem(address, _image);
               Navigator.of(context).pop();
             },

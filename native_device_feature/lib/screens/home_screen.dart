@@ -20,22 +20,36 @@ class HomeScreen extends StatelessWidget {
               label: Text("add")),
         ],
       ),
-      body: Consumer<ItemProvider>(
-        child: Center(
-          child:Text("No item added"),
-        ),
-        builder: (ctx,obj,ch){
-          return obj.allItem.length<1? ch:ListView.builder(itemBuilder:(ctx,index){
-            return ListTile(
-              title: Text(obj.allItem[index].title),
-              leading: CircleAvatar(
-                backgroundImage: FileImage(obj.allItem[index].file),
-              ),
-              contentPadding: EdgeInsets.all(8.0),
-            );
-          },
-          itemCount: obj.allItem.length,);
-        },
+      body: FutureBuilder(
+        future:
+            Provider.of<ItemProvider>(context, listen: false).fetchAndSetData(),
+        builder: (context, snapShoot) =>
+        snapShoot.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Consumer<ItemProvider>(
+                    child: Center(
+                      child: Text("No item added"),
+                    ),
+                    builder: (ctx, obj, ch) {
+                      return obj.allItem.length < 1
+                          ? ch
+                          : ListView.builder(
+                              itemBuilder: (ctx, index) {
+                                return ListTile(
+                                  title: Text(obj.allItem[index].title),
+                                  leading: CircleAvatar(
+                                    backgroundImage:
+                                        FileImage(obj.allItem[index].file),
+                                  ),
+                                  contentPadding: EdgeInsets.all(8.0),
+                                );
+                              },
+                              itemCount: obj.allItem.length,
+                            );
+                    },
+                  ),
       ),
     );
   }
