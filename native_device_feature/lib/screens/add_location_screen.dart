@@ -5,6 +5,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as systempath;
 import 'dart:io';
 import 'package:provider/provider.dart';
+import '../database/db_helper.dart';
 
 class AddLocaionScreen extends StatefulWidget {
   static const routeName = '/AddLocationScreen';
@@ -48,6 +49,16 @@ class _AddLocaionScreenState extends State<AddLocaionScreen> {
      */
   }
 
+  String imageUrl;
+  _getCurrentLocation(){
+    final x=LocationHelper.getMapImage(444.00, -7474.0);
+    setState(() {
+      imageUrl=x;
+    });
+
+   print(imageUrl);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,13 +95,13 @@ class _AddLocaionScreenState extends State<AddLocaionScreen> {
                           ),
                           child: _image == null
                               ? Center(
-                                  child: Text("No Image"),
-                                )
+                            child: Text("No Image"),
+                          )
                               : Image.file(
-                                  _image,
-                                  height: 150,
-                                  width: 150,
-                                ),
+                            _image,
+                            height: 150,
+                            width: 150,
+                          ),
                         ),
                       ),
                       Expanded(
@@ -103,15 +114,28 @@ class _AddLocaionScreenState extends State<AddLocaionScreen> {
                         ),
                       ),
                     ],
-                  )
+                  ),
+                  Container(
+                    height: 200,
+                    width: double.infinity,
+                    child: imageUrl == null
+                        ? Center(
+                      child: Text('No image preview'),
+                    )
+                        : Image.network(imageUrl,
+                    fit: BoxFit.cover,),
+                  ),
+                  RaisedButton.icon(onPressed: _getCurrentLocation,
+                    icon: Icon(Icons.maps_ugc),
+                    label: Text('Add Location'),),
                 ],
               ),
             ),
           ),
           RaisedButton.icon(
             color: Colors.amber,
-            onPressed: () async{
-             await Provider.of<ItemProvider>(context, listen: false)
+            onPressed: () async {
+              await Provider.of<ItemProvider>(context, listen: false)
                   .addItem(address, _image);
               Navigator.of(context).pop();
             },
